@@ -1,12 +1,17 @@
-import { useState } from 'react'
-import './App.css'
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import Signup from "./assets/pages/Signup";
+ import Login from "./assets/pages/Login";
+import Home from "./assets/pages/Home";
 
-function App() {
-  const [count, setCount] = useState(0)
-
+const App = () => {
   return (
-    <h1 className=' text-blue-600'>Welcom to the page</h1>
-  )
-}
+    <Routes>
+      <Route path="/signup" element={<Signup />}/>
+      <Route path="/login" element={<Login />}/>
+      <Route path="/" element={<Home/>}/>
+    </Routes>
+  );
+};
 
-export default App
+export default App;

@@ -1,15 +1,21 @@
-const express = require("express");
-const dotenv = require("dotenv");
-
+import express from "express";
+import dotenv from "dotenv";
+import cors from "cors";
+import router from "./router/user.router.js";
+import connectDB from "./database/dbconnection.js";
 
 dotenv.config();
 
 const app = express();
 
-const PORT = 8000;
+app.use(cors({ origin: "http://localhost:5173", methods: ["GET", "POST", "PUT", "DELETE"], credentials: true, }));
+app.use(express.json());
 
+const PORT = process.env.PORT || 7000;
 
+app.use("/api/v1/user", router);
 
 app.listen(PORT, () => {
-  console.log(`Server is running on http://localhost:${PORT}`);
+    connectDB()
+    console.log(`Server is running on http://localhost:${PORT}`);
 });
