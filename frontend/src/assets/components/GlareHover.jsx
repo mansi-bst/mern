@@ -1,5 +1,6 @@
 import { useRef } from 'react';
 
+
 const GlareHover = ({
   width = '500px',
   height = '500px',

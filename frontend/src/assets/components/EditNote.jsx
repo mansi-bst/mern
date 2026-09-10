@@ -1,12 +1,14 @@
-
 import React, { useEffect, useState } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { ArrowLeft, Save } from "lucide-react";
+
 import GlowCursor from "./GlowCursor";
+import { useTheme } from "../../context/ThemeContext";
 
 const EditNote = () => {
   const navigate = useNavigate();
   const { id } = useParams();
+  const { darkMode } = useTheme();
 
   const [note, setNote] = useState({
     title: "",
@@ -23,8 +25,7 @@ const EditNote = () => {
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState("");
 
-  //  FETCH NOTE 
-
+  // FETCH NOTE
   const fetchNote = async () => {
     try {
       const token = localStorage.getItem("token");
@@ -87,8 +88,7 @@ const EditNote = () => {
     fetchNote();
   }, [id]);
 
-  // HANDLE INPUT 
-
+  // HANDLE INPUT
   const handleChange = (e) => {
     const { name, value } = e.target;
 
@@ -98,8 +98,7 @@ const EditNote = () => {
     }));
   };
 
-  //  REMINDER TOGGLE
-
+  // REMINDER TOGGLE
   const handleReminderToggle = () => {
     setReminderEnabled((prev) => {
       const newValue = !prev;
@@ -112,8 +111,7 @@ const EditNote = () => {
     });
   };
 
-  //UPDATE NOTE
-
+  // UPDATE NOTE
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -162,14 +160,15 @@ const EditNote = () => {
     }
   };
 
-  //LOADING
-
+  // LOADING
   if (loading) {
     return (
       <div
-        className="flex min-h-screen items-center
-                   justify-center bg-slate-950
-                   text-slate-400"
+        className={`flex min-h-screen items-center justify-center transition-colors duration-300 ${
+          darkMode
+            ? "bg-slate-950 text-slate-400"
+            : "bg-white text-slate-600"
+        }`}
       >
         Loading note...
       </div>
@@ -177,24 +176,29 @@ const EditNote = () => {
   }
 
   // UI
-
   return (
     <GlowCursor>
-      <div className="min-h-screen bg-slate-950 px-4 py-8 text-white">
+      <div
+        className={`min-h-screen px-4 py-8 transition-colors duration-300 ${
+          darkMode
+            ? "bg-slate-950 text-white"
+            : "bg-white text-slate-900"
+        }`}
+      >
         <div className="mx-auto max-w-3xl">
 
-          {/* HEADER*/}
-
+          {/* HEADER */}
           <div className="mb-8 flex items-center gap-4">
 
+            {/* Back Button */}
             <button
               type="button"
               onClick={() => navigate("/notes")}
-              className="rounded-lg border
-                         border-slate-700 p-2
-                         text-slate-300 transition
-                         hover:bg-slate-800
-                         hover:text-white"
+              className={`cursor-pointer rounded-lg border p-2 transition ${
+                darkMode
+                  ? "border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+                  : "border-slate-300 text-slate-600 hover:bg-slate-100 hover:text-slate-900"
+              }`}
             >
               <ArrowLeft size={20} />
             </button>
@@ -204,15 +208,20 @@ const EditNote = () => {
                 Edit Note
               </h1>
 
-              <p className="mt-1 text-sm text-slate-400">
+              <p
+                className={`mt-1 text-sm ${
+                  darkMode
+                    ? "text-slate-400"
+                    : "text-slate-600"
+                }`}
+              >
                 Update your note
               </p>
             </div>
 
           </div>
 
-          {/*ERROR*/}
-
+          {/* ERROR */}
           {error && (
             <div
               className="mb-6 rounded-lg border
@@ -225,128 +234,127 @@ const EditNote = () => {
           )}
 
           {/* FORM */}
-
           <form
             onSubmit={handleSubmit}
-            className="rounded-2xl border
-                       border-slate-800
-                       bg-slate-900 p-6
-                       shadow-lg sm:p-8"
+            className={`rounded-2xl border p-6 shadow-lg transition-colors duration-300 sm:p-8 ${
+              darkMode
+                ? "border-slate-800 bg-slate-900"
+                : "border-slate-200 bg-slate-50"
+            }`}
           >
 
-            {/* TITLE  */}
-
+            {/* TITLE */}
             <div className="mb-6">
               <label
-                className="mb-2 block text-sm
-                           font-medium text-slate-300"
+                htmlFor="title"
+                className={`mb-2 block text-sm font-medium ${
+                  darkMode
+                    ? "text-slate-300"
+                    : "text-slate-700"
+                }`}
               >
                 Title
               </label>
 
               <input
+                id="title"
                 type="text"
                 name="title"
                 value={note.title}
                 onChange={handleChange}
                 placeholder="Enter note title"
                 required
-                className="w-full rounded-lg border
-                           border-slate-700
-                           bg-slate-950 px-4 py-3
-                           text-white outline-none
-                           transition
-                           placeholder:text-slate-500
-                           focus:border-blue-500
-                           focus:ring-2
-                           focus:ring-blue-500/20"
+                className={`w-full rounded-lg border px-4 py-3 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 ${
+                  darkMode
+                    ? "border-slate-700 bg-slate-950 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
               />
             </div>
 
-            {/* ================= CONTENT ================= */}
-
+            {/* CONTENT */}
             <div className="mb-6">
               <label
-                className="mb-2 block text-sm
-                           font-medium text-slate-300"
+                htmlFor="content"
+                className={`mb-2 block text-sm font-medium ${
+                  darkMode
+                    ? "text-slate-300"
+                    : "text-slate-700"
+                }`}
               >
                 Content
               </label>
 
               <textarea
+                id="content"
                 name="content"
                 value={note.content}
                 onChange={handleChange}
                 placeholder="Write your note..."
                 rows="8"
                 required
-                className="w-full resize-none
-                           rounded-lg border
-                           border-slate-700
-                           bg-slate-950 px-4 py-3
-                           text-white outline-none
-                           transition
-                           placeholder:text-slate-500
-                           focus:border-blue-500
-                           focus:ring-2
-                           focus:ring-blue-500/20"
+                className={`w-full resize-none rounded-lg border px-4 py-3 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 ${
+                  darkMode
+                    ? "border-slate-700 bg-slate-950 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
               />
             </div>
 
-            {/* ================= CATEGORY + PRIORITY ================= */}
-
+            {/* CATEGORY + PRIORITY */}
             <div className="mb-6 grid gap-6 sm:grid-cols-2">
 
               {/* Category */}
-
               <div>
                 <label
-                  className="mb-2 block text-sm
-                             font-medium text-slate-300"
+                  htmlFor="category"
+                  className={`mb-2 block text-sm font-medium ${
+                    darkMode
+                      ? "text-slate-300"
+                      : "text-slate-700"
+                  }`}
                 >
                   Category
                 </label>
 
                 <input
+                  id="category"
                   type="text"
                   name="category"
                   value={note.category}
                   onChange={handleChange}
                   placeholder="e.g. Work, Personal"
-                  className="w-full rounded-lg
-                             border border-slate-700
-                             bg-slate-950 px-4 py-3
-                             text-white outline-none
-                             transition
-                             placeholder:text-slate-500
-                             focus:border-blue-500
-                             focus:ring-2
-                             focus:ring-blue-500/20"
+                  className={`w-full rounded-lg border px-4 py-3 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 ${
+                    darkMode
+                      ? "border-slate-700 bg-slate-950 text-white"
+                      : "border-slate-300 bg-white text-slate-900"
+                  }`}
                 />
               </div>
 
               {/* Priority */}
-
               <div>
                 <label
-                  className="mb-2 block text-sm
-                             font-medium text-slate-300"
+                  htmlFor="priority"
+                  className={`mb-2 block text-sm font-medium ${
+                    darkMode
+                      ? "text-slate-300"
+                      : "text-slate-700"
+                  }`}
                 >
                   Priority
                 </label>
 
                 <select
+                  id="priority"
                   name="priority"
                   value={note.priority}
                   onChange={handleChange}
-                  className="w-full rounded-lg
-                             border border-slate-700
-                             bg-slate-950 px-4 py-3
-                             text-white outline-none
-                             transition
-                             focus:border-blue-500
-                             focus:ring-2
-                             focus:ring-blue-500/20"
+                  className={`w-full rounded-lg border px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 ${
+                    darkMode
+                      ? "border-slate-700 bg-slate-950 text-white"
+                      : "border-slate-300 bg-white text-slate-900"
+                  }`}
                 >
                   <option value="Low">Low</option>
                   <option value="Medium">Medium</option>
@@ -356,95 +364,111 @@ const EditNote = () => {
 
             </div>
 
-            {/* ================= TAGS ================= */}
-
+            {/* TAGS */}
             <div className="mb-6">
               <label
-                className="mb-2 block text-sm
-                           font-medium text-slate-300"
+                htmlFor="tags"
+                className={`mb-2 block text-sm font-medium ${
+                  darkMode
+                    ? "text-slate-300"
+                    : "text-slate-700"
+                }`}
               >
                 Tags
               </label>
 
               <input
+                id="tags"
                 type="text"
                 name="tags"
                 value={note.tags}
                 onChange={handleChange}
                 placeholder="javascript, react, frontend"
-                className="w-full rounded-lg
-                           border border-slate-700
-                           bg-slate-950 px-4 py-3
-                           text-white outline-none
-                           transition
-                           placeholder:text-slate-500
-                           focus:border-blue-500
-                           focus:ring-2
-                           focus:ring-blue-500/20"
+                className={`w-full rounded-lg border px-4 py-3 outline-none transition placeholder:text-slate-500 focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 ${
+                  darkMode
+                    ? "border-slate-700 bg-slate-950 text-white"
+                    : "border-slate-300 bg-white text-slate-900"
+                }`}
               />
 
-              <p className="mt-2 text-xs text-slate-500">
+              <p
+                className={`mt-2 text-xs ${
+                  darkMode
+                    ? "text-slate-500"
+                    : "text-slate-500"
+                }`}
+              >
                 Separate multiple tags with commas.
               </p>
             </div>
 
-            {/* ================= REMINDER ================= */}
-
+            {/* REMINDER */}
             <div
-              className="mb-8 rounded-xl border
-                         border-slate-800
-                         bg-slate-950 p-5"
+              className={`mb-8 rounded-xl border p-5 transition-colors duration-300 ${
+                darkMode
+                  ? "border-slate-800 bg-slate-950"
+                  : "border-slate-200 bg-white"
+              }`}
             >
               <div className="flex items-center justify-between">
 
                 <div>
-                  <h3 className="font-semibold text-white">
+                  <h3 className="font-semibold">
                     Reminder
                   </h3>
 
-                  <p className="mt-1 text-sm text-slate-400">
+                  <p
+                    className={`mt-1 text-sm ${
+                      darkMode
+                        ? "text-slate-400"
+                        : "text-slate-600"
+                    }`}
+                  >
                     Set a reminder for this note
                   </p>
                 </div>
 
                 {/* Toggle */}
-
                 <button
                   type="button"
+                  aria-label="Toggle reminder"
                   onClick={handleReminderToggle}
-                  className={`relative h-6 w-11
-                              rounded-full transition ${
-                                reminderEnabled
-                                  ? "bg-blue-600"
-                                  : "bg-slate-700"
-                              }`}
+                  className={`relative h-6 w-11 cursor-pointer rounded-full transition ${
+                    reminderEnabled
+                      ? "bg-blue-600"
+                      : darkMode
+                        ? "bg-slate-700"
+                        : "bg-slate-300"
+                  }`}
                 >
                   <span
-                    className={`absolute top-1 h-4 w-4
-                                rounded-full bg-white
-                                transition ${
-                                  reminderEnabled
-                                    ? "left-6"
-                                    : "left-1"
-                                }`}
+                    className={`absolute top-1 h-4 w-4 rounded-full bg-white transition ${
+                      reminderEnabled
+                        ? "left-6"
+                        : "left-1"
+                    }`}
                   />
                 </button>
 
               </div>
 
               {/* Date & Time */}
-
               {reminderEnabled && (
                 <div className="mt-4">
 
                   <label
-                    className="mb-2 block text-sm
-                               font-medium text-slate-300"
+                    htmlFor="reminderDate"
+                    className={`mb-2 block text-sm font-medium ${
+                      darkMode
+                        ? "text-slate-300"
+                        : "text-slate-700"
+                    }`}
                   >
                     Reminder Date & Time
                   </label>
 
                   <input
+                    id="reminderDate"
                     type="datetime-local"
                     value={reminderDate}
                     onChange={(e) =>
@@ -458,22 +482,18 @@ const EditNote = () => {
                       .toISOString()
                       .slice(0, 16)}
                     required={reminderEnabled}
-                    className="w-full rounded-lg
-                               border border-slate-700
-                               bg-slate-900 px-4 py-3
-                               text-white outline-none
-                               transition
-                               focus:border-blue-500
-                               focus:ring-2
-                               focus:ring-blue-500/20"
+                    className={`w-full rounded-lg border px-4 py-3 outline-none transition focus:border-blue-500 focus:ring-2 focus:ring-blue-500/20 ${
+                      darkMode
+                        ? "border-slate-700 bg-slate-900 text-white"
+                        : "border-slate-300 bg-white text-slate-900"
+                    }`}
                   />
 
                 </div>
               )}
             </div>
 
-            {/* ================= BUTTONS ================= */}
-
+            {/* BUTTONS */}
             <div
               className="flex flex-col gap-3
                          sm:flex-row
@@ -481,33 +501,23 @@ const EditNote = () => {
             >
 
               {/* Cancel */}
-
               <button
                 type="button"
                 onClick={() => navigate("/notes")}
-                className="rounded-lg border
-                           border-slate-700 px-5 py-3
-                           font-medium text-slate-300
-                           transition
-                           hover:bg-slate-800
-                           hover:text-white"
+                className={`cursor-pointer rounded-lg border px-5 py-3 font-medium transition ${
+                  darkMode
+                    ? "border-slate-700 text-slate-300 hover:bg-slate-800 hover:text-white"
+                    : "border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
+                }`}
               >
                 Cancel
               </button>
 
               {/* Update */}
-
               <button
                 type="submit"
                 disabled={saving}
-                className="flex items-center
-                           justify-center gap-2
-                           rounded-lg bg-blue-600
-                           px-5 py-3 font-semibold
-                           transition
-                           hover:bg-blue-500
-                           disabled:cursor-not-allowed
-                           disabled:opacity-60"
+                className="flex cursor-pointer items-center justify-center gap-2 rounded-lg bg-blue-600 px-5 py-3 font-semibold text-white transition hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 <Save size={18} />
 
@@ -526,4 +536,13 @@ const EditNote = () => {
 };
 
 export default EditNote;
+
+
+
+
+
+
+
+
+
 
