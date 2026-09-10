@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { errorEmitter, successEmitter } from "../../toasttify.Emitter";
 
 const Login = () => {
   const [formData, setFormData] = useState({
@@ -21,44 +22,46 @@ const Login = () => {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
+  e.preventDefault();
 
-    setError("");
-    setLoading(true);
+  setError("");
+  setLoading(true);
 
-    try {
-      const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/v1/user/login`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      const data = await response.json();
-
-      console.log("Backend response:", data);
-
-      if (!response.ok) {
-        setError(data.message || "Invalid email or password");
-        return;
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_API_URL}/api/v1/user/login`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
       }
+    );
 
-      if (data.token) {
-        localStorage.setItem("token", data.token);
-      }
+    const data = await response.json();
 
-      navigate("/");
-    } catch (error) {
-      console.log(error);
-      setError("Unable to connect to server. Please try again.");
-    } finally {
-      setLoading(false);
+    console.log("Backend response:", data);
+
+    if (!response.ok) {
+      errorEmitter(data.message || "Login failed");
+      return;
     }
-  };
+
+    // Save logged-in user
+    localStorage.setItem("user", JSON.stringify(data.user));
+    localStorage.setItem("token", data.token);
+
+    successEmitter(data.message || "Login successful");
+
+    navigate("/");
+  } catch (error) {
+    console.log(error);
+    setError("Unable to connect to server. Please try again.");
+  } finally {
+    setLoading(false);
+  }
+};
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
@@ -140,7 +143,7 @@ const Login = () => {
           <button
             type="button"
             onClick={() => navigate("/signup")}
-            className="text-blue-600 font-semibold hover:text-blue-800"
+            className="text-blue-600 cursor-pointer font-semibold hover:text-blue-800"
           >
             Sign up
           </button>

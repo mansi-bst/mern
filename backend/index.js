@@ -3,6 +3,8 @@ import dotenv from "dotenv";
 import cors from "cors";
 import router from "./router/user.router.js";
 import connectDB from "./database/dbconnection.js";
+import noteRouter from "./router/note.router.js";
+
 
 dotenv.config();
 
@@ -14,6 +16,9 @@ app.use(express.json());
 const PORT = process.env.PORT || 7000;
 
 app.use("/api/v1/user", router);
+// app.use("/api/v1/contact", contactRouter);
+app.use("/api/v1/notes", noteRouter);
+
 
 app.listen(PORT, () => {
     connectDB()

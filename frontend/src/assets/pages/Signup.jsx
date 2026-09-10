@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { errorEmitter, successEmitter } from "../../toasttify.Emitter";
 
 const Signup = () => {
   const [formData, setFormData] = useState({
@@ -38,7 +39,7 @@ const Signup = () => {
             "Content-Type": "application/json",
           },
           body: JSON.stringify(formData),
-        }
+        },
       );
 
       const data = await response.json();
@@ -46,15 +47,20 @@ const Signup = () => {
       console.log("Backend response:", data);
 
       if (!response.ok) {
-        setError(data.message || "Unable to create account");
+         errorEmitter(data.message || "Unable to create account");
         return;
       }
 
+      successEmitter(data.message || "Account created successfully");
+
+
       // Signup successful
-      navigate("/login");
+      setTimeout(() => {
+        navigate("/");
+      }, 1500);
     } catch (error) {
       console.log(error);
-      setError("Unable to connect to server. Please try again.");
+      errorEmitter("Unable to connect to server. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -63,27 +69,19 @@ const Signup = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gray-100 px-4">
       <div className="w-full max-w-md bg-white rounded-2xl shadow-xl p-8">
-
         {/* Heading */}
         <div className="text-center mb-8">
           <h1 className="text-3xl font-bold text-gray-800">
             Create your Account
           </h1>
 
-          <p className="text-gray-500 mt-2">
-            Sign up to create your account
-          </p>
+          <p className="text-gray-500 mt-2">Sign up to create your account</p>
         </div>
 
         {/* Error */}
-        {error && (
-          <div className="mb-4 text-center text-red-500">
-            {error}
-          </div>
-        )}
+        {error && <div className="mb-4 text-center text-red-500">{error}</div>}
 
         <form onSubmit={handleSubmit} className="space-y-5">
-
           {/* Name */}
           <div>
             <label
@@ -176,13 +174,11 @@ const Signup = () => {
           >
             {loading ? "Creating Account..." : "Create Account"}
           </button>
-
         </form>
 
         {/* Login Link */}
         <p className="text-center text-sm text-gray-600 mt-6">
           Already have an account?{" "}
-
           <button
             type="button"
             onClick={() => navigate("/login")}
@@ -191,7 +187,6 @@ const Signup = () => {
             Login
           </button>
         </p>
-
       </div>
     </div>
   );

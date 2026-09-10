@@ -1,0 +1,8 @@
+.scroll-float {
+  overflow: hidden;
+}
+
+.char {
+  display: inline-block;
+  will-change: transform, opacity;
+}
