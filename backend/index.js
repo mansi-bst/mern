@@ -10,7 +10,7 @@ dotenv.config();
 
 const app = express();
 
-app.use(cors({ origin: "http://localhost:5173", methods: ["GET", "POST", "PUT", "DELETE"], credentials: true, }));
+app.use(cors({ origin: ["http://localhost:5173", "https://mernnote-book.netlify.app",], methods: ["GET", "POST", "PUT", "DELETE"], credentials: true, }));
 app.use(express.json());
 
 const PORT = process.env.PORT || 7000;
