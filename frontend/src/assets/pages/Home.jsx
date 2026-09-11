@@ -1,4 +1,3 @@
-
 import React, { useEffect, useRef, useState } from "react";
 import {
   BookLock,
@@ -6,7 +5,6 @@ import {
   NotebookPen,
   Zap,
 } from "lucide-react";
-
 import "../../App.css";
 import VariableProximity from "../components/VariableProximity";
 import GlowCursor from "../components/GlowCursor";
